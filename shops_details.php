@@ -27,7 +27,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 
       // $decoded_data = JWT::decode($jwt, $secret_key, array('HS512'));
 
-$sql_check="SELECT s.id,s.code,s.name,s.area_id,s.description,s.phone,s.address,a.name AS area_name FROM shop s LEFT JOIN area_codes a 
+$sql_check="SELECT s.id,s.code,s.name,s.area_id,s.description,s.phone,s.address,s.latitude,s.longitude,a.name AS area_name FROM shop s LEFT JOIN area_codes a 
 ON s.area_id=a.id WHERE s.id >0 ";
 		$result =  $conn->query($sql_check);
 
@@ -50,6 +50,8 @@ if($result->num_rows< 1) {
 					 $ss['description']=$row['description'];
 					 $ss['area_id']=$row['area_id'];
 					 $ss['area_name']=$row['area_name'];
+					 $ss['latitude']=$row['latitude'];
+					 $ss['longitude']=$row['longitude'];
 					 $shops[]=$ss;
 					 
 				 }
