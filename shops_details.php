@@ -1,8 +1,8 @@
 <?php
 ini_set("display_errors", 1);
 
-//require 'vendor/autoload.php';
-//use \Firebase\JWT\JWT;
+require 'vendor/autoload.php';
+use \Firebase\JWT\JWT;
 
 //include headers
 header("Access-Control-Allow-Origin: *");
@@ -16,16 +16,19 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
    // body
    $data = json_decode(file_get_contents("php://input"));
 
-  // $headers = getallheaders();
-		if(!empty($data->secret_id)  ){
+   $headers = getallheaders();
+   //echo $headers["Authorization"];exit();
+		if(!empty($headers["Authorization"])  ){
 
      try{
 
-      // $jwt = $headers["Authorization"];
+       $jwt = $headers["Authorization"];
+		if (preg_match('/Bearer\s(\S+)/', $headers["Authorization"], $matches)) {
+           $jwt = $matches[1];
+        }
+       $secret_key = "owt125";
 
-      // $secret_key = "owt125";
-
-      // $decoded_data = JWT::decode($jwt, $secret_key, array('HS512'));
+       $decoded_data = JWT::decode($jwt, $secret_key, array('HS512'));
 
 $sql_check="SELECT s.id,s.code,s.name,s.area_id,s.description,s.phone,s.address,s.latitude,s.longitude,a.name AS area_name FROM shop s LEFT JOIN area_codes a 
 ON s.area_id=a.id WHERE s.id >0 ";

@@ -1,8 +1,8 @@
 <?php
 ini_set("display_errors", 1);
 
-//require 'vendor/autoload.php';
-//use \Firebase\JWT\JWT;
+require 'vendor/autoload.php';
+use \Firebase\JWT\JWT;
 
 //include headers
 header("Access-Control-Allow-Origin: *");
@@ -16,16 +16,19 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
    // body
    $data = json_decode(file_get_contents("php://input"));
 
-  // $headers = getallheaders();
-		if(!empty($data->secret_id)  && !empty($data->shop_id)){
+   $headers = getallheaders();
+		if(!empty($headers["Authorization"]) && !empty($data->shop_id)){
 
      try{
 
-      // $jwt = $headers["Authorization"];
+       $jwt = $headers["Authorization"];
+		if (preg_match('/Bearer\s(\S+)/', $headers["Authorization"], $matches)) {
+           $jwt = $matches[1];
+        }
 
-      // $secret_key = "owt125";
+       $secret_key = "owt125";
 
-      // $decoded_data = JWT::decode($jwt, $secret_key, array('HS512'));
+       $decoded_data = JWT::decode($jwt, $secret_key, array('HS512'));
 
 $shop_id  =$data->shop_id;
 $sql_check="SELECT *from shop_db_settings where shop_id='".$shop_id."' ";
