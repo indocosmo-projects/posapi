@@ -49,16 +49,16 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 			$result =  $conn->query($sql_check);
 
 			if($result->num_rows< 1) {
-				http_response_code(404);
+				http_response_code(200);
 				echo json_encode(array(
-                "status" => 404,
+                "status" => 200,
                 "message" =>'No Shops Found'
 				));
            
 			}
 			else {
-				
-				 while($row =  $result->fetch_assoc() ) {
+				$row =  $result->fetch_assoc();
+				// while($row =  $result->fetch_assoc() ) {
 					//$servername = $row['db_server'];
 					$username = $row['db_user'];
 					$password = $row['db_password'];
@@ -126,7 +126,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 						   "message" => "Failed to create order"
 						 ));
 					}
-				 }
+				 //}
 			}
 				}catch(Exception $ex){
 

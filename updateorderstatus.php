@@ -1,8 +1,8 @@
 <?php
 ini_set("display_errors", 1);
 
-//require 'vendor/autoload.php';
-//use \Firebase\JWT\JWT;
+require 'vendor/autoload.php';
+use \Firebase\JWT\JWT;
 
 //include headers
 header("Access-Control-Allow-Origin: *");
@@ -15,31 +15,40 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 
    // body
    $data = json_decode(file_get_contents("php://input"));
-
+	$headers = getallheaders();
   
-		if(!empty($data->shop_id)){
+		if(!empty($data->shop_code)){
 
-     try{
+		try{
+			$jwt = $headers["Authorization"];
+			if (preg_match('/Bearer\s(\S+)/', $headers["Authorization"], $matches)) {
+				$jwt = $matches[1];
+			}
+			$secret_key = "owt125";
+
+			$decoded_data = JWT::decode($jwt, $secret_key, array('HS512')); 
+			
 			$order_id  =$data->order_id;
-			$shop_id  =$data->shop_id;
+			$shop_id  =$data->shop_code;
 			$status  =$data->status;
 			$updated_at  =$data->updated_at;
 	  
 
-		$sql_check="SELECT *from shop_db_settings where shop_id='".$shop_id."' ";
+			$sql_check="SELECT *from shop_db_settings where shop_id='".$shop_id."' ";
 		
-		$result =  $conn->query($sql_check);
+			$result =  $conn->query($sql_check);
 
-if($result->num_rows< 1) {
-				http_response_code(404);
-              echo json_encode(array(
-                "status" => 404,
+			if($result->num_rows< 1) {
+				http_response_code(200);
+				echo json_encode(array(
+                "status" => 200,
                 "message" =>'No Shops Found'
               ));
            
 			} else {
 				$shops=array();
-				 while($row =  $result->fetch_assoc() ) {
+				$row =  $result->fetch_assoc();
+				 //while($row =  $result->fetch_assoc() ) {
 					//$servername = $row['db_server'];
 					$username = $row['db_user'];
 					$password = $row['db_password'];
@@ -59,7 +68,7 @@ if($result->num_rows< 1) {
 					//echo "Connected successfully";
 					/***********************************************/
 					
-		  $sql_check1="SELECT *FROM online_order_hrds  WHERE order_id = '".$order_id."' and shop_code='".$shop_id."' ";
+					$sql_check1="SELECT *FROM online_order_hrds  WHERE order_id = '".$order_id."' and shop_code='".$shop_id."' ";
 					$result2 =  $conn->query($sql_check1);
 	
 					if($result2->num_rows< 1) {
@@ -99,21 +108,21 @@ if($result->num_rows< 1) {
 							 echo json_encode(array(
 
 							   "status" => 500,
-							   "message" => $sql3
+							   "message" => "Invalid credentials"
 							 ));
 						}
 					}
 					/****************************************************/
 					
-				 }		 
+				 //}		 
        
        }
 }catch(Exception $ex){
 
        http_response_code(500); //server error
        echo json_encode(array(
-         "status" => 0,
-         "message" => $ex->getMessage()
+         "status" => 401,
+         "message" => " Invalid Token"
        ));
      }
 	}	 else{
