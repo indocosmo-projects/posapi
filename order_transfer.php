@@ -1,8 +1,8 @@
 <?php
-ini_set("display_errors", 1);
+//ini_set("display_errors", 1);
 
-//require 'vendor/autoload.php';
-//use \Firebase\JWT\JWT;
+require 'vendor/autoload.php';
+use \Firebase\JWT\JWT;
 //include headers
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
@@ -14,16 +14,19 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 		
 	$obj = (array) json_decode(file_get_contents("php://input", true));
 		
-	//$headers = getallheaders();
-	if(!empty($obj['order_hdrs']->shop_code) && !empty($obj['order_hdrs']->total_amount) ){
+	$headers = getallheaders();
+	if(!empty($headers["Authorization"]) && !empty($obj['order_hdrs']->shop_code) && !empty($obj['order_hdrs']->total_amount) ){
 
 		try{
 
-		   //$jwt = $headers["Authorization"];
+		   $jwt = $headers["Authorization"];
+			//$jwt = $headers["Authorization"];
+			if (preg_match('/Bearer\s(\S+)/', $headers["Authorization"], $matches)) {
+				$jwt = $matches[1];
+			}
+		   $secret_key = "owt125";
 
-		  // $secret_key = "owt125";
-
-		  // $decoded_data = JWT::decode($jwt, $secret_key, array('HS512'));
+		   $decoded_data = JWT::decode($jwt, $secret_key, array('HS512'));
 
 			$shop_code  =$obj['order_hdrs']->shop_code;
 			$order_date  =$obj['order_hdrs']->order_date;

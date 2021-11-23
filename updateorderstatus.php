@@ -17,7 +17,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
    $data = json_decode(file_get_contents("php://input"));
 	$headers = getallheaders();
   
-		if(!empty($data->shop_code)){
+		if(!empty($headers["Authorization"]) && !empty($data->shop_code)){
 
 		try{
 			$jwt = $headers["Authorization"];
@@ -130,7 +130,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
      http_response_code(404); // not found
      echo json_encode(array(
        "status" => 0,
-       "message" => 'Invalid Shop'
+       "message" => 'All Data Needed'
      ));
    }
 }
