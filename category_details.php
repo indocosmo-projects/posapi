@@ -30,8 +30,9 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 
        $decoded_data = JWT::decode($jwt, $secret_key, array('HS512'));
 
-		$shop_id  =$data->shop_code;
-		$sql_check="SELECT *from shop_db_settings where shop_id='".$shop_id."' ";
+		$shop_code=$data->shop_code;
+		//$sql_check="SELECT *from shop_db_settings where shop_id='".$shop_id."' ";
+		$sql_check="select * from shop_db_settings where shop_id = (select id from shop where code = '$shop_code')";
 		$result =  $conn->query($sql_check);
 
 		if($result->num_rows< 1) {

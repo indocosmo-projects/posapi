@@ -29,13 +29,13 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 			$decoded_data = JWT::decode($jwt, $secret_key, array('HS512')); 
 			
 			$order_id  =$data->order_id;
-			$shop_id  =$data->shop_code;
+			$shop_code  =$data->shop_code;
 			$status  =$data->status;
 			$updated_at  =$data->updated_at;
 	  
 
-			$sql_check="SELECT *from shop_db_settings where shop_id='".$shop_id."' ";
-		
+			//$sql_check="SELECT *from shop_db_settings where shop_id='".$shop_id."' ";
+			$sql_check="select * from shop_db_settings where shop_id = (select id from shop where code = '$shop_code')";
 			$result =  $conn->query($sql_check);
 
 			if($result->num_rows< 1) {
@@ -68,7 +68,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 					//echo "Connected successfully";
 					/***********************************************/
 					
-					$sql_check1="SELECT *FROM online_order_hrds  WHERE order_id = '".$order_id."' and shop_code='".$shop_id."' ";
+					$sql_check1="SELECT *FROM online_order_hrds  WHERE order_id = '".$order_id."' and shop_code='".$shop_code."' ";
 					$result2 =  $conn->query($sql_check1);
 	
 					if($result2->num_rows< 1) {
@@ -79,7 +79,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 					  ));
 				   
 					} else {
-						$sql3="UPDATE online_order_hrds SET `status`= '".$status."' WHERE order_id = '".$order_id."' and shop_code='".$shop_id."' ";
+						$sql3="UPDATE online_order_hrds SET `status`= '".$status."' WHERE order_id = '".$order_id."' and shop_code='".$shop_code."' ";
 
 						if ($conn->query($sql3) === TRUE) {
 							
@@ -119,7 +119,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
        }
 }catch(Exception $ex){
 
-       http_response_code(500); //server error
+       http_response_code(401); //server error
        echo json_encode(array(
          "status" => 401,
          "message" => " Invalid Token"

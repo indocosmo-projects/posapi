@@ -31,11 +31,12 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 			
 			$created_on  =$data->created_on;
 			$created_at  =date("Y-m-d H:i:s", strtotime($data->created_at));
-			$shop_id  =$data->shop_code;
+			$shop_code  =$data->shop_code;
 	  
 
-			$sql_check="SELECT *from shop_db_settings where shop_id='".$shop_id."' ";
-		
+			//$sql_check="SELECT *from shop_db_settings where shop_id='".$shop_id."' ";
+			$sql_check="select * from shop_db_settings where shop_id = (select id from shop where code = '$shop_code')";
+
 			$result =  $conn->query($sql_check);
 
 			if($result->num_rows< 1) {
@@ -70,7 +71,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 					
 					$sql_check="SELECT t1.*,t3.customer_name,t3.customer_phone,t3.customer_email FROM online_order_hrds as t1 LEFT JOIN
 					online_order_customer AS t3 ON t3.order_id=t1.Id
-					WHERE t1.order_date>='".$created_at."' AND t1.shop_code='".$shop_id."'";
+					WHERE t1.order_date>='".$created_at."' AND t1.shop_code='".$shop_code."'";
 					//print_r($sql_check);exit();
 					$result =  $conn->query($sql_check);
 
