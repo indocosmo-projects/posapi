@@ -1,8 +1,8 @@
 <?php
 ini_set("display_errors", 1);
 
-require 'vendor/autoload.php';
-use \Firebase\JWT\JWT;
+//require 'vendor/autoload.php';
+//use \Firebase\JWT\JWT;
 
 //include headers
 header("Access-Control-Allow-Origin: *");
@@ -16,19 +16,19 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
    // body
    $data = json_decode(file_get_contents("php://input"));
 
-  $headers = getallheaders();
-	if(!empty($headers["Authorization"]) && !empty($data->shop_code)){
+  //$headers = getallheaders();
+	if(!empty($data->shop_code)){
 
      try{
 		 
-			$jwt = $headers["Authorization"];
+			/* $jwt = $headers["Authorization"];
 			if (preg_match('/Bearer\s(\S+)/', $headers["Authorization"], $matches)) {
 				$jwt = $matches[1];
 			}
 			$secret_key = "owt125";
 
 			$decoded_data = JWT::decode($jwt, $secret_key, array('HS512'));
-			
+			 */
 			$created_on  =$data->created_on;
 			$created_at  =date("Y-m-d H:i:s", strtotime($data->created_at));
 			$shop_code  =$data->shop_code;
@@ -135,7 +135,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 			}
 }catch(Exception $ex){
 
-       http_response_code(500); //server error
+       http_response_code(401); //server error
        echo json_encode(array(
          "status" => 401,
          "message" => " Invalid Token"

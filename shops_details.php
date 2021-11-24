@@ -1,5 +1,5 @@
 <?php
-ini_set("display_errors", 1);
+//ini_set("display_errors", 1);
 
 require 'vendor/autoload.php';
 use \Firebase\JWT\JWT;
@@ -70,15 +70,15 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
        http_response_code(500); //server error
        echo json_encode(array(
          "status" => 401,
-         "message" => " Invalid Token"
+         "message" => "Invalid Token"
        ));
      }
 	}	 else{
 
-     http_response_code(404); // not found
+     http_response_code(401); // not found
      echo json_encode(array(
-       "status" => 0,
-       "message" => "All data needed"
+		"status" => 401,
+         "message" => "Unauthorized Access"
      ));
    }
 }

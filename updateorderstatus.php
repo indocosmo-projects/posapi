@@ -1,8 +1,8 @@
 <?php
 ini_set("display_errors", 1);
 
-require 'vendor/autoload.php';
-use \Firebase\JWT\JWT;
+//require 'vendor/autoload.php';
+//use \Firebase\JWT\JWT;
 
 //include headers
 header("Access-Control-Allow-Origin: *");
@@ -15,19 +15,19 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 
    // body
    $data = json_decode(file_get_contents("php://input"));
-	$headers = getallheaders();
+	//$headers = getallheaders();
   
-		if(!empty($headers["Authorization"]) && !empty($data->shop_code)){
+		if( !empty($data->shop_code)){
 
 		try{
-			$jwt = $headers["Authorization"];
+			/* $jwt = $headers["Authorization"];
 			if (preg_match('/Bearer\s(\S+)/', $headers["Authorization"], $matches)) {
 				$jwt = $matches[1];
 			}
 			$secret_key = "owt125";
 
 			$decoded_data = JWT::decode($jwt, $secret_key, array('HS512')); 
-			
+			 */
 			$order_id  =$data->order_id;
 			$shop_code  =$data->shop_code;
 			$status  =$data->status;
