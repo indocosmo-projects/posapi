@@ -1,8 +1,9 @@
 <?php
-//ini_set("display_errors", 1);
+ini_set("display_errors", 1);
 
 require 'vendor/autoload.php';
 use \Firebase\JWT\JWT;
+
 
 //include headers
 header("Access-Control-Allow-Origin: *");
@@ -26,11 +27,13 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
            $jwt = $matches[1];
         }
 
-       $secret_key = "owt125";
 
-       $decoded_data = JWT::decode($jwt, $secret_key, array('HS512'));
+		$secret_key = "owt125";
 
-		$shop_code=$data->shop_code;
+		$decoded_data = JWT::decode($jwt, $secret_key, array('HS512'));
+		$shop_code  =$data->shop_code;
+	  
+
 		//$sql_check="SELECT *from shop_db_settings where shop_id='".$shop_id."' ";
 		$sql_check="select * from shop_db_settings where shop_id = (select id from shop where code = '$shop_code')";
 		$result =  $conn->query($sql_check);
@@ -39,7 +42,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 			http_response_code(200);
 			echo json_encode(array(
 			"status" => 200,
-			"message" => "No Shops found"
+			"message" =>'No Shops Found'
 			));
            
 			} else {
@@ -56,48 +59,54 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 					// Check connection
 					if ($conn->connect_error) {
 					  //die("Connection failed: " . $conn->connect_error);
-					  http_response_code(500); //server error
-					   echo json_encode(array(
+						http_response_code(500); //server error
+						echo json_encode(array(
 						 "status" => 0,
 						 "message" => 'Connection failed'
 					   ));
 					}
 					//echo "Connected successfully";
 					/***********************************************/
-					$sql_check="SELECT id,code,hsn_code,name,alternative_name,description FROM item_classes WHERE is_deleted='0'";
+					$cat_id='';//sub_class_id
+					if(!empty($data->category)){
+						$cat_id=$data->category;
+						$sql_check="SELECT id,code,name,fixed_price FROM sale_items WHERE is_deleted='0' and sub_class_id LIKE '%".$cat_id."%' ";
+					}else{
+						$sql_check="SELECT id,code,name,fixed_price FROM sale_items WHERE is_deleted='0' ";
+					}
+
+					//$sql_check="SELECT id,code,name,fixed_price FROM sale_items WHERE is_deleted='0'";
 					$result =  $conn->query($sql_check);
 
 					if($result->num_rows< 1) {
-						http_response_code(200);
+						http_response_code(404);
 						echo json_encode(array(
-						"status" => 200,
-						"message" => "No categorys found"
+						"status" => 404,
+						"message" => "No items found"
 						));
            
 					} else {
-						$category=array();
-						while($row =mysqli_fetch_array($result, MYSQLI_ASSOC)) {
-							 $ss=array();
-							 $ss['id']=$row['id'];
-							 $ss['code']=$row['code'];
-							 $ss['name']=$row['name'];
-							// $ss['hsn_code']=$row['hsn_code'];
-							 $ss['alternative_name']=$row['alternative_name'];
-							// $ss['description']=$row['description'];
-							 
-							 $category[]=$ss;
+					$items=array();
+					while($row =mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+						 $ss=array();
+						 $ss['id']=$row['id'];
+						 $ss['code']=$row['code'];
+						 $ss['name']=$row['name'];					 
+						 $ss['fixed_price']=$row['fixed_price'];
+						 
+						 $items[]=$ss;
 					 
-						}
-						// http_response_code(500); //server error
-						echo json_encode(array(
-
-						"status" => 200,
-						"category" => $category
-						));
 					}
+					// http_response_code(500); //server error
+					 echo json_encode(array(
+
+					   "status" => 200,
+					   "items" => $items
+					 ));
+				}
 					/****************************************************/
 					
-				 //}		 
+				// }		 
        
        }
 }catch(Exception $ex){
@@ -113,7 +122,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
      http_response_code(404); // not found
      echo json_encode(array(
        "status" => 0,
-       "message" => 'All Data Needed'
+       "message" => "All Data Needed"
      ));
    }
 }

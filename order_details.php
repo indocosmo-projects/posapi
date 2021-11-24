@@ -1,8 +1,8 @@
 <?php
 ini_set("display_errors", 1);
 
-//require 'vendor/autoload.php';
-//use \Firebase\JWT\JWT;
+require 'vendor/autoload.php';
+use \Firebase\JWT\JWT;
 
 //include headers
 header("Access-Control-Allow-Origin: *");
@@ -16,29 +16,40 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
    // body
    $data = json_decode(file_get_contents("php://input"));
 
-  
-		if(!empty($data->shop_id)){
+  $headers = getallheaders();
+	if(!empty($headers["Authorization"]) && !empty($data->shop_code)){
 
      try{
+		 
+			$jwt = $headers["Authorization"];
+			if (preg_match('/Bearer\s(\S+)/', $headers["Authorization"], $matches)) {
+				$jwt = $matches[1];
+			}
+			$secret_key = "owt125";
+
+			$decoded_data = JWT::decode($jwt, $secret_key, array('HS512'));
+			
 			$created_on  =$data->created_on;
 			$created_at  =date("Y-m-d H:i:s", strtotime($data->created_at));
-     	  $shop_id  =$data->shop_id;
+			$shop_code  =$data->shop_code;
 	  
 
-$sql_check="SELECT *from shop_db_settings where shop_id='".$shop_id."' ";
-		
-		$result =  $conn->query($sql_check);
+			//$sql_check="SELECT *from shop_db_settings where shop_id='".$shop_id."' ";
+			$sql_check="select * from shop_db_settings where shop_id = (select id from shop where code = '$shop_code')";
 
-if($result->num_rows< 1) {
-				http_response_code(404);
-              echo json_encode(array(
-                "status" => 404,
+			$result =  $conn->query($sql_check);
+
+			if($result->num_rows< 1) {
+				http_response_code(200);
+				echo json_encode(array(
+                "status" => 200,
                 "message" =>'No Shops Found'
               ));
            
 			} else {
-				$shops=array();
-				 while($row =  $result->fetch_assoc() ) {
+					$shops=array();
+					$row =  $result->fetch_assoc();
+					// while($row =  $result->fetch_assoc() ) {
 					//$servername = $row['db_server'];
 					$username = $row['db_user'];
 					$password = $row['db_password'];
@@ -50,7 +61,7 @@ if($result->num_rows< 1) {
 					if ($conn->connect_error) {
 					  //die("Connection failed: " . $conn->connect_error);
 					  http_response_code(500); //server error
-					   echo json_encode(array(
+						echo json_encode(array(
 						 "status" => 0,
 						 "message" => 'Connection failed'
 					   ));
@@ -58,74 +69,76 @@ if($result->num_rows< 1) {
 					//echo "Connected successfully";
 					/***********************************************/
 					
-		  $sql_check="SELECT * FROM order_dtls WHERE order_date>='".$created_on."' and order_time>='".$created_at."' ";
-	  		//print_r($sql_check);exit();
-			$result =  $conn->query($sql_check);
+					$sql_check="SELECT t1.*,t3.customer_name,t3.customer_phone,t3.customer_email FROM online_order_hrds as t1 LEFT JOIN
+					online_order_customer AS t3 ON t3.order_id=t1.Id
+					WHERE t1.order_date>='".$created_at."' AND t1.shop_code='".$shop_code."'";
+					//print_r($sql_check);exit();
+					$result =  $conn->query($sql_check);
 
-if($result->num_rows< 1) {
-				http_response_code(404);
-              echo json_encode(array(
-                "status" => 404,
-                "message" => "No orders found"
-              ));
+					if($result->num_rows< 1) {
+						http_response_code(404);
+						echo json_encode(array(
+						"status" => 404,
+						"message" => "No orders found"
+						));
            
-			} else {
-				$items=array();
-				 while($row =mysqli_fetch_array($result, MYSQLI_ASSOC)) {
-					 $ss=array();
-					 $ss['id']=$row['id'];
-					 $ss['order_id']=$row['order_id'];
-					 $ss['sale_item_id']=$row['sale_item_id'];					 
-					 $ss['sale_item_code']=$row['sale_item_code'];					 
-					 $ss['name']=$row['name'];
-					 $ss['sub_class_name']=$row['sub_class_name'];
-					 $ss['qty']=$row['qty'];
-					 $ss['item_total']=$row['item_total'];
-					 $ss['tax']['tax1_name']=$row['tax1_name'];
-					 $ss['tax']['tax1_pc']=$row['tax1_pc'];
-					 $ss['tax']['tax1_amount']=$row['tax1_amount'];
-					 $ss['tax']['is_tax1_applied']=$row['is_tax1_applied'];
-					  $ss['tax']['tax2_name']=$row['tax2_name'];
-					 $ss['tax']['tax2_pc']=$row['tax2_pc'];
-					 $ss['tax']['tax2_amount']=$row['tax2_amount'];
-					 $ss['tax']['is_tax2_applied']=$row['is_tax2_applied'];
-					 $ss['tax']['tax3_name']=$row['tax3_name'];
-					 $ss['tax']['tax3_pc']=$row['tax3_pc'];
-					 $ss['tax']['tax3_amount']=$row['tax3_amount'];
-					 $ss['tax']['is_tax3_applied']=$row['is_tax3_applied'];
-					 $ss['GST']['gst_name']=$row['gst_name'];
-					 $ss['GST']['gst_pc']=$row['gst_pc'];
-					 
-					 $ss['discount']['discount_name']=$row['discount_name'];
-					 $ss['discount']['discount_code']=$row['discount_code'];
-					 $ss['discount']['discount_type']=$row['discount_type'];
-					 $ss['discount']['discount_price']=$row['discount_price'];
+					} else {
+						$items=array();
+						while($row =mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+							$ss=array();
+							$food=array();
+							// $ss['id']=$row['id'];
+							$ss['order_hdrs']['order_id']=$row['order_id'];
+							$ss['order_hdrs']['shop_code']=$row['shop_code'];
+							$ss['order_hdrs']['order_date']=$row['order_date'];
+							$ss['order_hdrs']['total_amount']=$row['total_amount'];
+							$ss['order_hdrs']['total_discount']=$row['total_discount'];
+							$ss['order_hdrs']['total_tax']=$row['total_tax'];
+							$ss['order_hdrs']['remarks']=$row['remarks'];
+							$ss['order_hdrs']['status']=$row['status'];
 
-					$ss['status']=$row['status'];
-					$ss['order_date']=$row['order_date'];
-					$ss['order_time']=$row['order_time'];
-					
-					 $items[]=$ss;
-					 
-				 }
-        // http_response_code(500); //server error
-         echo json_encode(array(
+							$ss['order_customer']['customer_name']=$row['customer_name'];
+							$ss['order_customer']['customer_phone']=$row['customer_phone'];
+							$ss['order_customer']['customer_email']=$row['customer_email'];
 
-           "status" => 200,
-           "items" => $items
-         ));
-       }
+							$food_sql="SELECT* from online_order_dtls WHERE order_id='".$row['Id']."' ";
+							$f_result =  $conn->query($food_sql);
+							if($result->num_rows>0) {
+								while($f_row =mysqli_fetch_array($f_result, MYSQLI_ASSOC)) {
+									 $fs=array();
+									 $fs['sale_item_code']=$f_row['sale_item_code'];
+									 $fs['sale_qty']=$f_row['sale_qty'];
+									 $fs['item_total']=$f_row['item_total'];					 
+									 $fs['item_tax']=$f_row['item_tax'];
+									 $fs['Item_discount']=$f_row['Item_discount'];							 
+									 $food[]=$fs;
+							 
+								}
+
+							}						
+					 
+							$ss['order_dtls']=$food;
+							$items[]=$ss;
+					 
+						}
+					// http_response_code(500); //server error
+					 echo json_encode(array(
+
+					   "status" => 200,
+					   "items" => $items
+					 ));
+					}
 					/****************************************************/
 					
-				 }		 
+				 //}		 
        
-       }
+			}
 }catch(Exception $ex){
 
        http_response_code(500); //server error
        echo json_encode(array(
-         "status" => 0,
-         "message" => $ex->getMessage()
+         "status" => 401,
+         "message" => " Invalid Token"
        ));
      }
 	}	 else{

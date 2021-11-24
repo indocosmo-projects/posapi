@@ -1,6 +1,7 @@
 <?php
 ini_set("display_errors", 1);
 // include vendor
+
 require 'vendor/autoload.php';
 use \Firebase\JWT\JWT;
 
