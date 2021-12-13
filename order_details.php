@@ -71,7 +71,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 					
 					$sql_check="SELECT t1.*,t3.customer_name,t3.customer_phone,t3.customer_email,t3.id as cus_id FROM online_order_hrds as t1 LEFT JOIN
 					online_order_customer AS t3 ON t3.order_id=t1.Id
-					WHERE t1.order_date>='".$created_at."' AND t1.shop_code='".$shop_code."'";
+					WHERE t1.order_date>='".$created_at."' AND t1.shop_code='".$shop_code."' and (t1.status='' OR t1.status='new')";
 					//print_r($sql_check);exit();
 					$result =  $conn->query($sql_check);
 
@@ -317,6 +317,11 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 							$ss['order_dtls']=$food;							
 							$items[]=$ss;
 					 
+							$sql3="UPDATE online_order_hrds SET `status`= 'Sent To Shop' WHERE Id = '".$row['Id']."' and shop_code='".$shop_code."' ";
+//print_r($sql3);exit();
+						if ($conn->query($sql3) === TRUE) {}
+							
+							
 						}
 						$items_details['order_hdrs']=$items;
 						//$items_details[]=$items;
