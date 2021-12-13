@@ -249,7 +249,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 									 $fs['is_sc_applied']="false";
 									 $fs['is_printed_to_kitchen']="false";
 									 $fs['is_void']="false";
-									 $fs['status']=$row['status'];
+									 $fs['status']=$status;
 									 $fs['uom_code']="No UOM Code";
 									 $fs['uom_name']="No UOM Name";
 									 $fs['uom_symbol']="-";
