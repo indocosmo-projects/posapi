@@ -89,18 +89,18 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 							$ss=array();$pay=array();
 							$food=array();
 							$status='New';
-							if($row['status']=='accepted'){
+							if(trim($row['status'])=='accepted'){
 								$status='accepted' ;
-							}elseif($row['status']==3){
+							}elseif(trim($row['status'])==3){
 								$status= '3';
 							}
-							elseif($row['status']==4){
+							elseif(trim($row['status'])==4){
 								$status='4';
 							}
-							elseif($row['status']=='delivered'){
+							elseif(trim($row['status'])=='delivered'){
 								$status= '7';
 							}
-							elseif($row['status']=='cancelled'){
+							elseif(trim($row['status'])=='cancelled'){
 								$status='8';
 							}
 							// $ss['id']=$row['id'];
