@@ -110,6 +110,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 							$ss['station_code']='OO';
 							$ss['user_id']="2";
 							
+							
 							$ss['order_date']=date("Y-m-d",strtotime($row['order_date']));
 							$ss['order_time']=$row['order_date'];
 							$ss['shift_id']="0";
