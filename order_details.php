@@ -88,6 +88,21 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 						while($row =mysqli_fetch_array($result, MYSQLI_ASSOC)) {
 							$ss=array();$pay=array();
 							$food=array();
+							$status='New';
+							if($row['status']=='accepted'){
+								$status='accepted' ;
+							}elseif($row['status']==3){
+								$status= '3';
+							}
+							elseif($row['status']==4){
+								$status='4';
+							}
+							elseif($row['status']=='delivered'){
+								$status= '7';
+							}
+							elseif($row['status']=='cancelled'){
+								$status='8';
+							}
 							// $ss['id']=$row['id'];
 							$ss['order_id']=$row['order_id'];
 							$ss['order_no']=$row['Id'];
@@ -116,7 +131,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 							$ss['remarks']=NULL;
 							$ss['closing_date']=date("Y-m-d");
 							$ss['closing_time']=date("Y-m-d H:i:s");
-							$ss['status']=$row['status'];
+							$ss['status']=$status;
 							$ss['total_print_count']=0;
 							$ss['refund_total_tax1']="0.00";
 							$ss['refund_total_tax2']="0.00";
