@@ -350,7 +350,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
      }
 	}	 else{
 
-     http_response_code(404); // not found
+     http_response_code(501); // not found
      echo json_encode(array(
        "status" => 0,
        "message" => 'Invalid Shop'
