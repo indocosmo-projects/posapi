@@ -87,23 +87,23 @@ if($_SERVER['REQUEST_METHOD'] === "GET"){
 						if ($conn->query($sql3) === TRUE) {
 							
 							$response['order_id'] = $oid->order_id;
-							$response['status_code'] = 201;
+							$response['status_code'] = 200;
 							if($oid->status=='accepted'){
-								$response['message'] = "Order Accept Status Updated  Successfully";
+								//$response['message'] = "Order Accept Status Updated  Successfully";
 							}elseif($oid->status==3){
-								$response['message'] = "KOT Print Status  Updated  Successfully";
+								//$response['message'] = "KOT Print Status  Updated  Successfully";
 							}
 							elseif($oid->status==4){
-								$response['message'] = "KOT Print Status  Updated  Successfully";
+								//$response['message'] = "KOT Print Status  Updated  Successfully";
 							}
 							elseif($oid->status=='delivered'){
-								$response['message'] = "Order dispatched Status Updated Successfully";
+								//$response['message'] = "Order dispatched Status Updated Successfully";
 							}
 							elseif($oid->status=='cancelled'){
-								$response['message'] = "Order Canceled Successfully";
+								//$response['message'] = "Order Canceled Successfully";
 							}
 							elseif($oid->status=='Sent To Shop'){
-								$response['message'] = "Order Sent To Shop Successfully";
+								//$response['message'] = "Order Sent To Shop Successfully";
 							}
 							
 							echo json_encode($response);
