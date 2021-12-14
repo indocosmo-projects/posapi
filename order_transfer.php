@@ -30,6 +30,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 			   $decoded_data = JWT::decode($jwt, $secret_key, array('HS512'));
 
 				$shop_code  =$obj['order_hdrs']->shop_code;
+				$online_order_id  =$obj['order_hdrs']->order_id;
 				$order_date  =$obj['order_hdrs']->order_date;
 				//$order_time  =$obj['order_hdrs']->order_time;
 				$order_total  =$obj['order_hdrs']->total_amount;
@@ -82,9 +83,20 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 			
 						$order_id=uniqid();
 						$status='';
+						/**************************************/
+						$sql_check1="SELECT *FROM online_order_hrds  WHERE online_order_id = '".$online_order_id."' and shop_code='".$shop_code."' ";
+					$result2 =  $conn->query($sql_check1);
+	
+					if($result2->num_rows>0) {
+						$sql_check1="DELETE  FROM online_order_hrds WHERE online_order_id = '".$online_order_id."' and shop_code='".$shop_code."' ";
+						$result2 =  $conn->query($sql_check1);
+						
+					}
+						/******************************************/
+						
 						/*$sql = "INSERT INTO crudtable(firstname, lastname, email,favjob)
 						VALUES ('".$dxname."', 'Doe', 'john@example.com','coder')";*/
-						$sql = "INSERT INTO `online_order_hrds`( `order_id`, `shop_code`, `order_date`, `total_amount`,`total_discount`, `total_tax`, `remarks`,`status`)VALUES ('".$order_id."','".$shop_code."','".$order_date."','".$order_total."','".$total_discount."','".$total_tax."','".$remark."','".$status."')";
+						$sql = "INSERT INTO `online_order_hrds`( `order_id`, `shop_code`, `order_date`, `total_amount`,`total_discount`, `total_tax`, `remarks`,`status`,`online_order_id`)VALUES ('".$order_id."','".$shop_code."','".$order_date."','".$order_total."','".$total_discount."','".$total_tax."','".$remark."','".$status."','".$online_order_id."')";
 
 						//print_r($sql);exit();
 
