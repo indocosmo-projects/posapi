@@ -30,7 +30,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 			   $decoded_data = JWT::decode($jwt, $secret_key, array('HS512'));
 
 				$shop_code  =$obj['order_hdrs']->shop_code;
-				$online_order_id  =$obj['order_hdrs']->order_id;
+				$order_id  =$obj['order_hdrs']->order_id;
 				$order_date  =$obj['order_hdrs']->order_date;
 				//$order_time  =$obj['order_hdrs']->order_time;
 				$order_total  =$obj['order_hdrs']->total_amount;
@@ -81,14 +81,14 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 							));
 						}
 			
-						$order_id=uniqid();
+						$online_order_id=uniqid();
 						$status='';
 						/**************************************/
-						$sql_check1="SELECT *FROM online_order_hrds  WHERE online_order_id = '".$online_order_id."' and shop_code='".$shop_code."' ";
+						$sql_check1="SELECT *FROM online_order_hrds  WHERE order_id = '".$order_id."' and shop_code='".$shop_code."' ";
 					$result2 =  $conn->query($sql_check1);
 	
 					if($result2->num_rows>0) {
-						$sql_check1="DELETE  FROM online_order_hrds WHERE online_order_id = '".$online_order_id."' and shop_code='".$shop_code."' ";
+						$sql_check1="DELETE  FROM online_order_hrds WHERE order_id = '".$order_id."' and shop_code='".$shop_code."' ";
 						$result2 =  $conn->query($sql_check1);
 						
 					}
@@ -103,7 +103,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 						if ($conn->query($sql) === TRUE) {
 							$order_in_id=$conn->insert_id;
 							$ref_id ='ICSSTORE-OOT-0000'.$conn->insert_id;;
-							$up_qry="UPDATE online_order_hrds SET order_id = '".$ref_id."' WHERE Id = '".$conn->insert_id."'";
+							$up_qry="UPDATE online_order_hrds SET online_order_id = '".$ref_id."' WHERE Id = '".$conn->insert_id."'";
 							$updates=$conn->query($up_qry);
 		
 		
