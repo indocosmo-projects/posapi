@@ -84,7 +84,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
            
 					} else {
 						$items_details=array();
-						$items=array();
+						$items=array();$payment_count=1;$food_count=1;
 						while($row =mysqli_fetch_array($result, MYSQLI_ASSOC)) {
 							$ss=array();$pay=array();
 							$food=array();
@@ -104,7 +104,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 								$status='8';
 							}
 							// $ss['id']=$row['id'];
-							$ss['order_id']=$row['order_id'];
+							$ss['order_id']=$row['online_order_id'];
 							$ss['order_no']=$row['Id'];
 							$ss['shop_code']=$row['shop_code'];
 							$ss['station_code']='OO';
@@ -160,7 +160,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 							//$ss['order_hdrs']['remarks']=$row['remarks'];
 							//$ss['order_hdrs']['status']=$row['status'];
 
-							$ss['order_customer']['order_id']=$row['order_id'];
+							$ss['order_customer']['order_id']=$row['online_order_id'];
 							$ss['order_customer']['title']=NULL;
 							$ss['order_customer']['first_name']=$row['customer_name'];
 							$ss['order_customer']['last_name']=$row['customer_name'];
@@ -177,15 +177,15 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 							$ss['order_customer']['customer_id']=$row['cus_id'];
 							$ss['order_customer']['customer_type']="1";
 							
-							$ss['order_hdr_ext']['order_id']=$row['order_id'];
+							$ss['order_hdr_ext']['order_id']=$row['online_order_id'];
 							$ss['order_hdr_ext']['tax_invoice_no']="0";
 							$ss['order_hdr_ext']['delivery_date']=date('Y-m-d');
 							$ss['order_hdr_ext']['delivery_time']=date('H:i:s');
 							$ss['order_hdr_ext']['order_mail_receipt']="";
 							
 							$payments=array();
-							$payments['id']="";
-							$payments['order_id']=$row['order_id'];
+							$payments['id']=$row['online_order_id'].'-000'.$payment_count;
+							$payments['order_id']=$row['online_order_id'];
 							$payments['payment_mode']="1";
 							$payments['paid_amount']="0.00";
 							$payments['card_name']=NULL;
@@ -224,7 +224,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 							if($result->num_rows>0) {
 								while($f_row =mysqli_fetch_array($f_result, MYSQLI_ASSOC)) {
 									 $fs=array();
-									 $fs['id']=$f_row['id'];
+									 $fs['id']=$row['online_order_id'].'-000'.$food_count;
 									 $fs['order_id']=$f_row['order_id'];
 									 $fs['sale_item_id']="0";
 									 $fs['sale_item_code']=$f_row['sale_item_code'];
@@ -309,7 +309,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 									 $fs['discount_variants']="0.00";
 									 							 
 									 $food[]=$fs;
-							 
+									 $food_count++;
 								}
 
 							}						
@@ -320,7 +320,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 							//$sql3="UPDATE online_order_hrds SET `status`= 'Sent To Shop' WHERE Id = '".$row['Id']."' and shop_code='".$shop_code."' ";
 //print_r($sql3);exit();
 					//	if ($conn->query($sql3) === TRUE) {}
-							
+							$payment_count++;
 							
 						}
 						$items_details['order_hdrs']=$items;
@@ -359,3 +359,4 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 }
 
 ?>
+
