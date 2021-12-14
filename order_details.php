@@ -317,9 +317,9 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 							$ss['order_dtls']=$food;							
 							$items[]=$ss;
 					 
-							$sql3="UPDATE online_order_hrds SET `status`= 'Sent To Shop' WHERE Id = '".$row['Id']."' and shop_code='".$shop_code."' ";
+							//$sql3="UPDATE online_order_hrds SET `status`= 'Sent To Shop' WHERE Id = '".$row['Id']."' and shop_code='".$shop_code."' ";
 //print_r($sql3);exit();
-						if ($conn->query($sql3) === TRUE) {}
+					//	if ($conn->query($sql3) === TRUE) {}
 							
 							
 						}

@@ -28,9 +28,10 @@ if($_SERVER['REQUEST_METHOD'] === "GET"){
 
 			$decoded_data = JWT::decode($jwt, $secret_key, array('HS512')); 
 			 */
-			$order_id  =$data->order_id;
+			// print_r($data->order_dtls);exit();
+			$order_id  =$data->order_dtls;
 			$shop_code  =$data->shop_code;
-			$status  =$data->status;
+			//$status  =$data->status;
 			$updated_at  =$data->updated_at;
 	  
 
@@ -67,8 +68,10 @@ if($_SERVER['REQUEST_METHOD'] === "GET"){
 					}
 					//echo "Connected successfully";
 					/***********************************************/
+				//	foreach($order_id as $oid){
+					foreach($order_id as $oid){
 					
-					$sql_check1="SELECT *FROM online_order_hrds  WHERE order_id = '".$order_id."' and shop_code='".$shop_code."' ";
+					$sql_check1="SELECT *FROM online_order_hrds  WHERE order_id = '".$oid->order_id."' and shop_code='".$shop_code."' ";
 					$result2 =  $conn->query($sql_check1);
 	
 					if($result2->num_rows< 1) {
@@ -79,25 +82,28 @@ if($_SERVER['REQUEST_METHOD'] === "GET"){
 					  ));
 				   
 					} else {
-						$sql3="UPDATE online_order_hrds SET `status`= '".$status."' WHERE order_id = '".$order_id."' and shop_code='".$shop_code."' ";
+						$sql3="UPDATE online_order_hrds SET `status`= '".$oid->status."' WHERE order_id = '".$oid->order_id."' and shop_code='".$shop_code."' ";
 
 						if ($conn->query($sql3) === TRUE) {
 							
-							$response['order_id'] = $order_id;
+							$response['order_id'] = $oid->order_id;
 							$response['status_code'] = 201;
-							if($status=='accepted'){
+							if($oid->status=='accepted'){
 								$response['message'] = "Order Accept Status Updated  Successfully";
-							}elseif($status==3){
+							}elseif($oid->status==3){
 								$response['message'] = "KOT Print Status  Updated  Successfully";
 							}
-							elseif($status==4){
+							elseif($oid->status==4){
 								$response['message'] = "KOT Print Status  Updated  Successfully";
 							}
-							elseif($status=='delivered'){
+							elseif($oid->status=='delivered'){
 								$response['message'] = "Order dispatched Status Updated Successfully";
 							}
-							elseif($status=='cancelled'){
+							elseif($oid->status=='cancelled'){
 								$response['message'] = "Order Canceled Successfully";
+							}
+							elseif($oid->status=='Sent To Shop'){
+								$response['message'] = "Order Sent To Shop Successfully";
 							}
 							
 							echo json_encode($response);
@@ -112,6 +118,7 @@ if($_SERVER['REQUEST_METHOD'] === "GET"){
 							 ));
 						}
 					}
+				 }
 					/****************************************************/
 					
 				 //}		 
