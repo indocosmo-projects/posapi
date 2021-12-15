@@ -88,7 +88,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 						while($row =mysqli_fetch_array($result, MYSQLI_ASSOC)) {
 							$ss=array();$pay=array();
 							$food=array();
-							$status='2';
+							$status=$row['status'];
 							if(trim($row['status'])=='accepted'){
 								$status='accepted' ;
 							}elseif(trim($row['status'])==3){
