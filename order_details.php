@@ -225,7 +225,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 								while($f_row =mysqli_fetch_array($f_result, MYSQLI_ASSOC)) {
 									 $fs=array();
 									 $fs['id']=$row['online_order_id'].'-000'.$food_count;
-									 $fs['order_id']=$f_row['order_id'];
+									 $fs['order_id']=$row['online_order_id'];
 									 $fs['sale_item_id']="0";
 									 $fs['sale_item_code']=$f_row['sale_item_code'];
 									 $fs['sub_class_id']="0";
