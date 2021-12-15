@@ -1,17 +1,17 @@
 <?php
-//ini_set("display_errors", 1);
+ini_set("display_errors", 1);
 
 //require 'vendor/autoload.php';
 //use \Firebase\JWT\JWT;
 
 //include headers
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET");
+header("Access-Control-Allow-Methods: POST");
 header("Content-type: application/json; charset=utf-8");
 
 // including files
 include_once("db_connect.php");
-if($_SERVER['REQUEST_METHOD'] === "GET"){
+if($_SERVER['REQUEST_METHOD'] === "POST"){
 
    // body
    $data = json_decode(file_get_contents("php://input"));
@@ -70,7 +70,7 @@ if($_SERVER['REQUEST_METHOD'] === "GET"){
 					/***********************************************/
 				//	foreach($order_id as $oid){
 					foreach($order_id as $oid){
-					//echo $oid;exit();
+					
 					$sql_check1="SELECT *FROM online_order_hrds  WHERE online_order_id = '".$oid."' and shop_code='".$shop_code."' ";
 					$result2 =  $conn->query($sql_check1);
 	
