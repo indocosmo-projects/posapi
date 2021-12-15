@@ -1,5 +1,5 @@
 <?php
-ini_set("display_errors", 1);
+//ini_set("display_errors", 1);
 
 //require 'vendor/autoload.php';
 //use \Firebase\JWT\JWT;
@@ -71,7 +71,7 @@ if($_SERVER['REQUEST_METHOD'] === "GET"){
 				//	foreach($order_id as $oid){
 					foreach($order_id as $oid){
 					//echo $oid;exit();
-					$sql_check1="SELECT *FROM online_order_hrds  WHERE order_id = '".$oid."' and shop_code='".$shop_code."' ";
+					$sql_check1="SELECT *FROM online_order_hrds  WHERE online_order_id = '".$oid."' and shop_code='".$shop_code."' ";
 					$result2 =  $conn->query($sql_check1);
 	
 					if($result2->num_rows< 1) {
@@ -82,7 +82,7 @@ if($_SERVER['REQUEST_METHOD'] === "GET"){
 					  ));
 				   
 					} else {
-						$sql3="UPDATE online_order_hrds SET `status`= '".$status."' WHERE order_id = '".$oid."' and shop_code='".$shop_code."' ";
+						$sql3="UPDATE online_order_hrds SET `status`= '".$status."' WHERE online_order_id = '".$oid."' and shop_code='".$shop_code."' ";
 
 						if ($conn->query($sql3) === TRUE) {
 							
