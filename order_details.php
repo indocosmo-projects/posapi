@@ -1,5 +1,5 @@
 <?php
-//ini_set("display_errors", 1);
+ini_set("display_errors", 1);
 
 //require 'vendor/autoload.php';
 //use \Firebase\JWT\JWT;
@@ -71,7 +71,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 					
 					$sql_check="SELECT t1.*,t3.customer_name,t3.customer_phone,t3.customer_email,t3.id as cus_id FROM online_order_hrds as t1 LEFT JOIN
 					online_order_customer AS t3 ON t3.order_id=t1.Id
-					WHERE t1.order_date>='".$created_at."' AND t1.shop_code='".$shop_code."' and (t1.status='' OR t1.status='new')";
+					WHERE t1.order_date>='".$created_at."' AND t1.shop_code='".$shop_code."' and t1.status='1' ";
 					//print_r($sql_check);exit();
 					$result =  $conn->query($sql_check);
 

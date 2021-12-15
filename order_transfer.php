@@ -82,7 +82,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 						}
 			
 						$online_order_id=uniqid();
-						$status='';
+						$status='1';
 						/**************************************/
 						$sql_check1="SELECT *FROM online_order_hrds  WHERE order_id = '".$order_id."' and shop_code='".$shop_code."' ";
 					$result2 =  $conn->query($sql_check1);
