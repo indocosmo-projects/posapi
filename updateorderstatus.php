@@ -75,9 +75,9 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 					$result2 =  $conn->query($sql_check1);
 	
 					if($result2->num_rows< 1) {
-						http_response_code(404);
+						http_response_code(201);
 					  echo json_encode(array(
-						"status" => 404,
+						"status" => 201,
 						"message" => "Invalid credentials"
 					  ));
 				   
@@ -134,7 +134,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
      }
 	}	 else{
 
-     http_response_code(404); // not found
+     http_response_code(401); // not found
      echo json_encode(array(
        "status" => 0,
        "message" => 'All Data Needed'
