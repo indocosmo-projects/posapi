@@ -1,5 +1,5 @@
 <?php
-ini_set("display_errors", 1);
+//ini_set("display_errors", 1);
 
 //require 'vendor/autoload.php';
 //use \Firebase\JWT\JWT;
@@ -224,11 +224,17 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 							if($result->num_rows>0) {
 								while($f_row =mysqli_fetch_array($f_result, MYSQLI_ASSOC)) {
 									 $fs=array();
+									 
+									 $sale_sql="SELECT t1.*,t3.code AS uom_code,t3.name AS uom_name,t3.uom_symbol FROM sale_items as t1 LEFT JOIN
+									uoms AS t3 ON t3.id=t1.uom_id
+									WHERE  t1.code='".$f_row['sale_item_code']."' ";
+									$saleitem =  $conn->query($sale_sql);
+									
 									 $fs['id']=$row['online_order_id'].'-000'.$food_count;
 									 $fs['order_id']=$row['online_order_id'];
 									 $fs['sale_item_id']="0";
 									 $fs['sale_item_code']=$f_row['sale_item_code'];
-									 $fs['sub_class_id']="0";
+									 $fs['sub_class_id']=$saleitem['sub_class_id'];
 									 $fs['sub_class_code']="0";
 									 $fs['sub_class_name']="No Item";
 									 $fs['name']="No Name";
@@ -250,9 +256,9 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 									 $fs['is_printed_to_kitchen']="false";
 									 $fs['is_void']="false";
 									 $fs['status']=$status;
-									 $fs['uom_code']="No UOM Code";
-									 $fs['uom_name']="No UOM Name";
-									 $fs['uom_symbol']="-";
+									 $fs['uom_code']=$saleitem['uom_code'];
+									 $fs['uom_name']=$saleitem['uom_name'];
+									 $fs['uom_symbol']=$saleitem['uom_symbol'];
 									 $fs['fixed_price']=number_format($f_row['item_total'],2);
 									 $fs['tax_calculation_method']="0";
 									 $fs['tax_id']="1";
