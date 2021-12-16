@@ -1,5 +1,5 @@
 <?php
-//ini_set("display_errors", 1);
+ini_set("display_errors", 1);
 
 //require 'vendor/autoload.php';
 //use \Firebase\JWT\JWT;
@@ -228,7 +228,8 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 									 $sale_sql="SELECT t1.*,t3.code AS uom_code,t3.name AS uom_name,t3.uom_symbol FROM sale_items as t1 LEFT JOIN
 									uoms AS t3 ON t3.id=t1.uom_id
 									WHERE  t1.code='".$f_row['sale_item_code']."' ";
-									$saleitem =  $conn->query($sale_sql);
+									$saleitem_one =  $conn->query($sale_sql);
+									$saleitem =  $saleitem_one->fetch_assoc();
 									
 									 $fs['id']=$row['online_order_id'].'-000'.$food_count;
 									 $fs['order_id']=$row['online_order_id'];
