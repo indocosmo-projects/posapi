@@ -238,7 +238,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 									 $fs['sub_class_id']=$saleitem['sub_class_id'];
 									 $fs['sub_class_code']="0";
 									 $fs['sub_class_name']="No Item";
-									 $fs['name']="No Name";
+									 $fs['name']=$saleitem['name'];
 									 $fs['alternative_name']="";
 									 $fs['name_to_print']="";
 									 $fs['alternative_name_to_print']="";
