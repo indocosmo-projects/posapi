@@ -282,8 +282,8 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 									 $fs['item_total']=number_format($f_row['item_total'],2);
 									 $fs['discount_type']="0";
 									 $fs['discount_id']="1";
-									 $fs['discount_code']="DF_DSC_NON";
-									 $fs['discount_name']="DF_DSC_NON";
+									 $fs['discount_code']="DEFPRONON";
+									 $fs['discount_name']="DEFPRONON";
 									 $fs['discount_price']="0.00";
 									 $fs['discount_is_percentage']="false";
 									 $fs['discount_is_overridable']="false";
@@ -366,4 +366,3 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 }
 
 ?>
-
