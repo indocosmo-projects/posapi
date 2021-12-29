@@ -32,10 +32,32 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 			$order_id  =$data->order_ids;
 			$shop_code  =$data->shop_code;
 			$status  =$data->status;
-			//$updated_at  =$data->updated_at;
-	  
-
-			//$sql_check="SELECT *from shop_db_settings where shop_id='".$shop_id."' ";
+			
+			if($status==2){
+				$status_en='Sent To Shop';
+			}elseif($status==3){
+				$status_en='Confirmed by shop';
+			}
+			elseif($status==4){
+				$status_en='Preparing or sent to kitchen';
+			}
+			elseif($status==5){
+				$status_en='Under preparation';
+			}
+			elseif($status==6){
+				$status_en='Ready to deliver';
+			}elseif($status==7){
+				$status_en='dispatched';
+			}elseif($status==8){
+				$status_en='Cancelled by shop';
+			}elseif($status==9){
+				$status_en='Delivered';
+			}elseif($status==10){
+				$status_en='Cancelled by customer';
+			}else{
+				$status_en='New order';
+			}
+			
 			$sql_check="select * from shop_db_settings where shop_id = (select id from shop where code = '$shop_code')";
 			$result =  $conn->query($sql_check);
 
@@ -72,6 +94,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 					foreach($order_id as $oid){
 					
 					$sql_check1="SELECT *FROM online_order_hrds  WHERE online_order_id = '".$oid."' and shop_code='".$shop_code."' ";
+					
 					$result2 =  $conn->query($sql_check1);
 	
 					if($result2->num_rows< 1) {
@@ -82,7 +105,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 					  ));
 				   
 					} else {
-						$sql3="UPDATE online_order_hrds SET `status`= '".$status."' WHERE online_order_id = '".$oid."' and shop_code='".$shop_code."' ";
+						$sql3="UPDATE online_order_hrds SET `status`= '".$status."',`status_en`= '".$status_en."' WHERE online_order_id = '".$oid."' and shop_code='".$shop_code."' ";
 
 						if ($conn->query($sql3) === TRUE) {
 							

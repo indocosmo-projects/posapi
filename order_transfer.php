@@ -82,7 +82,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 						}
 			
 						$online_order_id=uniqid();
-						$status='1';
+						$status='1';$status_en='new order';
 						/**************************************/
 						$sql_check1="SELECT *FROM online_order_hrds  WHERE order_id = '".$order_id."' and shop_code='".$shop_code."' ";
 					$result2 =  $conn->query($sql_check1);
@@ -96,7 +96,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 						
 						/*$sql = "INSERT INTO crudtable(firstname, lastname, email,favjob)
 						VALUES ('".$dxname."', 'Doe', 'john@example.com','coder')";*/
-						$sql = "INSERT INTO `online_order_hrds`( `order_id`, `shop_code`, `order_date`, `total_amount`,`total_discount`, `total_tax`, `remarks`,`status`,`online_order_id`)VALUES ('".$order_id."','".$shop_code."','".$order_date."','".$order_total."','".$total_discount."','".$total_tax."','".$remark."','".$status."','".$online_order_id."')";
+						$sql = "INSERT INTO `online_order_hrds`( `order_id`, `shop_code`, `order_date`, `total_amount`,`total_discount`, `total_tax`, `remarks`,`status`,`online_order_id`,`status_en`)VALUES ('".$order_id."','".$shop_code."','".$order_date."','".$order_total."','".$total_discount."','".$total_tax."','".$remark."','".$status."','".$online_order_id."','".$status_en."')";
 
 						//print_r($sql);exit();
 
