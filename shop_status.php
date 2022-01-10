@@ -6,12 +6,12 @@
 
 //include headers
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET");
+header("Access-Control-Allow-Methods: POST");
 header("Content-type: application/json; charset=utf-8");
 
 // including files
 include_once("db_connect.php");
-if($_SERVER['REQUEST_METHOD'] === "GET"){
+if($_SERVER['REQUEST_METHOD'] === "POST"){
 
    // body
    $data = json_decode(file_get_contents("php://input"));
@@ -32,8 +32,9 @@ if($_SERVER['REQUEST_METHOD'] === "GET"){
 			$shop_code =$data->shop_code;
 			$status =$data->status;
 			
-			$sql_check="select id from shop where code = '$shop_code'";
-			$result = $conn->query($sql_check);
+			$sql_check="select * from shop_db_settings where shop_id = (select id from shop where code = '$shop_code')";
+
+			$result =  $conn->query($sql_check);
 
 			if($result->num_rows< 1) {
 				http_response_code(200);
@@ -43,6 +44,25 @@ if($_SERVER['REQUEST_METHOD'] === "GET"){
               ));
            
 			} else {
+					$shops=array();
+					$row =  $result->fetch_assoc();
+					// while($row =  $result->fetch_assoc() ) {
+					//$servername = $row['db_server'];
+					$username = $row['db_user'];
+					$password = $row['db_password'];
+					$database=$row['db_database'];
+					
+					// Create connection
+					$conn = new mysqli($servername, $username, $password,$database);
+					// Check connection
+					if ($conn->connect_error) {
+					  //die("Connection failed: " . $conn->connect_error);
+					  http_response_code(500); //server error
+						echo json_encode(array(
+						 "status" => 0,
+						 "message" => 'Connection failed'
+					   ));
+					}
 					
 					
 					$sql3="UPDATE shop SET `online_order_status`= '".$status."' WHERE code='".$shop_code."' ";
@@ -67,10 +87,9 @@ if($_SERVER['REQUEST_METHOD'] === "GET"){
 						   "message" => "Invalid credentials"
 						 ));
 						}
-					}
 					/****************************************************/
 					
-				 //}		 
+				 }		 
        
        
 }catch(Exception $ex){
